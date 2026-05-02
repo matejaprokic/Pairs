@@ -18,6 +18,8 @@ public class SceneController : MonoBehaviour
     [SerializeField] private Sprite[] cardFaceImages;
     private MainCard _firstRevealedCard;
     private MainCard _secondRevealedCard;
+    private int _totalPairs;
+    private bool _gameFinished = false;
 
     [Header("Gameplay Settings")]
     [Range(0.5f, 5f)]
@@ -30,6 +32,12 @@ public class SceneController : MonoBehaviour
     [Header("Attempts")]
     [SerializeField] private TextMesh attemptsLabel;
     private int _attempts = 0;
+
+    [Header("Timer")]
+    [SerializeField] private TextMesh timerLabel;
+    private float _time = 0f;
+    [SerializeField] private int maxGameTime = 1;
+
 
     // Returns true if the player is allowed to reveal another card.
     // This is only possible when no second card is currently revealed (i.e., turn not yet completed).
@@ -44,6 +52,8 @@ public class SceneController : MonoBehaviour
             "Card images count doesn't match grid size!");
         
         SetCardStartLayout();
+
+        _totalPairs = cardFaceImages.Length;
     }
 
     private void SetCardStartLayout()
@@ -143,6 +153,11 @@ public class SceneController : MonoBehaviour
             _score++;
             scoreLabel.text = "Score: " + _score;
 
+            if (_score >=_totalPairs)
+            {
+                _gameFinished = true;
+            }
+
         }
         else
         {
@@ -160,5 +175,23 @@ public class SceneController : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    void Update()
+    {
+        if (_gameFinished) return;
+
+        _time += Time.deltaTime;
+
+        int totalSeconds = Mathf.FloorToInt(_time);
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+
+        timerLabel.text = $"Time: {minutes:00}:{seconds:00}";
+
+        if (minutes >= maxGameTime)
+        {
+            Restart();
+        }
     }
 }
