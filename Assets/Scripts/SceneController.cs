@@ -38,6 +38,10 @@ public class SceneController : MonoBehaviour
     private float _time = 0f;
     [SerializeField] private int maxGameTime = 1;
 
+    [Header("Combo")]
+    [SerializeField] private TextMesh comboLabel;
+    private int _combo = 0;
+    private int _bestCombo = 0;
 
     // Returns true if the player is allowed to reveal another card.
     // This is only possible when no second card is currently revealed (i.e., turn not yet completed).
@@ -54,6 +58,11 @@ public class SceneController : MonoBehaviour
         SetCardStartLayout();
 
         _totalPairs = cardFaceImages.Length;
+
+        if (comboLabel != null)
+        {
+            comboLabel.text = "";
+        }
     }
 
     private void SetCardStartLayout()
@@ -153,6 +162,18 @@ public class SceneController : MonoBehaviour
             _score++;
             scoreLabel.text = "Score: " + _score;
 
+            _combo++;
+
+            if (_combo >= _bestCombo)
+            {
+                _bestCombo = _combo;
+            }
+            
+            if (comboLabel!=null)
+            {
+                comboLabel.text = "Combo x" + _combo;
+            }
+
             if (_score >=_totalPairs)
             {
                 _gameFinished = true;
@@ -165,6 +186,13 @@ public class SceneController : MonoBehaviour
             yield return new WaitForSeconds(mismatchRevealDurationInSeconds);
             _firstRevealedCard.Unreveal();
             _secondRevealedCard.Unreveal();
+
+            _combo = 0;
+
+            if (comboLabel!= null)
+            {
+                comboLabel.text = "";
+            }
         }
 
         // Reset selected cards to end the current turn and allow the next turn to start
@@ -175,6 +203,9 @@ public class SceneController : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        _combo = 0;
+        _bestCombo = 0;
     }
 
     void Update()
