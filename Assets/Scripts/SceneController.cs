@@ -27,6 +27,10 @@ public class SceneController : MonoBehaviour
     [SerializeField] private TextMesh scoreLabel;
     private int _score = 0;
 
+    [Header("Attempts")]
+    [SerializeField] private TextMesh attemptsLabel;
+    private int _attempts = 0;
+
     // Returns true if the player is allowed to reveal another card.
     // This is only possible when no second card is currently revealed (i.e., turn not yet completed).
     public bool CanReveal
@@ -131,10 +135,14 @@ public class SceneController : MonoBehaviour
 
     private IEnumerator CheckCardMatchCoroutine()
     {
+        _attempts++;
+        attemptsLabel.text = "Attempts: " + _attempts;
+
         if (_firstRevealedCard.Id == _secondRevealedCard.Id)
         {
             _score++;
             scoreLabel.text = "Score: " + _score;
+
         }
         else
         {
