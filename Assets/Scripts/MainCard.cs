@@ -9,6 +9,11 @@ public class MainCard : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private int _id;
 
+    [Header ("Audio")]
+    [SerializeField] private AudioClip flipSound;
+    private AudioSource _audioSource;
+    private SceneController _sceneController;
+
     public int Id
     {
         get { return _id; }
@@ -18,13 +23,24 @@ public class MainCard : MonoBehaviour
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _audioSource = GetComponent<AudioSource>();
+        _sceneController = FindFirstObjectByType<SceneController>();
     }
 
     public void OnMouseDown()
     {
-        if (sceneController.IsPaused) return;
+        if (!_sceneController.CanReveal || sceneController.IsPaused) return;
         // If the card is face-down and revealing is allowed,
         // flip it face-up and notify the scene controller which card was revealed
+
+        if (!cardBack.activeSelf)
+            return;
+
+        if (_audioSource != null && flipSound != null)
+        {
+            _audioSource.PlayOneShot(flipSound);
+        }
+
         if (cardBack.activeSelf && sceneController.CanReveal)
         {
             cardBack.SetActive(false);
