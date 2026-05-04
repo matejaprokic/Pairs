@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 // GameController: Manages core game setup and flow: creates and positions cards, shuffles them,
 // tracks revealed cards, resolves matches/mismatches, and controls turn progression
@@ -26,22 +27,29 @@ public class SceneController : MonoBehaviour
     [SerializeField] private float mismatchRevealDurationInSeconds = 1f;
 
     [Header("Score")]
-    [SerializeField] private TextMesh scoreLabel;
+    [SerializeField] private TextMeshProUGUI scoreLabel;
     private int _score = 0;
 
     [Header("Attempts")]
-    [SerializeField] private TextMesh attemptsLabel;
+    [SerializeField] private TextMeshProUGUI attemptsLabel;
     private int _attempts = 0;
 
     [Header("Timer")]
-    [SerializeField] private TextMesh timerLabel;
+    [SerializeField] private TextMeshProUGUI timerLabel;
     private float _time = 0f;
     [SerializeField] private int maxGameTime = 1;
 
     [Header("Combo")]
-    [SerializeField] private TextMesh comboLabel;
+    [SerializeField] private TextMeshProUGUI comboLabel;
     private int _combo = 0;
     private int _bestCombo = 0;
+
+    [Header("Pause")]
+    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject pauseButton;
+    [SerializeField] private GameObject hudRestartButton;
+    private bool _isPaused = false;
+    public bool IsPaused => _isPaused;
 
     // Returns true if the player is allowed to reveal another card.
     // This is only possible when no second card is currently revealed (i.e., turn not yet completed).
@@ -202,15 +210,17 @@ public class SceneController : MonoBehaviour
 
     public void Restart()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
         _combo = 0;
         _bestCombo = 0;
+        
     }
 
     void Update()
     {
-        if (_gameFinished) return;
+        if (_gameFinished || _isPaused) return;
 
         _time += Time.deltaTime;
 
@@ -224,5 +234,45 @@ public class SceneController : MonoBehaviour
         {
             Restart();
         }
+    }
+
+    public void PauseGame()
+    {
+        if (_isPaused) return;
+
+        _isPaused = true;
+        Time.timeScale = 0f;
+
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(true);
+        }
+        if (pauseButton != null)
+            pauseButton.SetActive(false);
+
+        if (hudRestartButton != null)
+            hudRestartButton.SetActive(false);
+    }
+
+    public void ResumeGame()
+    {
+        if (!_isPaused) return;
+
+        _isPaused = false;
+        Time.timeScale = 1f;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
+        if (pauseButton != null)
+            pauseButton.SetActive(true);
+
+        if (hudRestartButton != null)
+            hudRestartButton.SetActive(true);
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }

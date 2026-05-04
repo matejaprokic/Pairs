@@ -22,6 +22,7 @@ public class MainCard : MonoBehaviour
 
     public void OnMouseDown()
     {
+        if (sceneController.IsPaused) return;
         // If the card is face-down and revealing is allowed,
         // flip it face-up and notify the scene controller which card was revealed
         if (cardBack.activeSelf && sceneController.CanReveal)
