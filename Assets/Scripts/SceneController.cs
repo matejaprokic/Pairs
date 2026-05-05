@@ -9,10 +9,10 @@ using TMPro;
 public class SceneController : MonoBehaviour
 {
     [Header("Cards Layout")]
-    private const int gridRows = 2;
-    private const int gridColumns = 4;
-    private const float offsetX = 4f;
-    private const float offsetY = 5f;
+    private const int gridRows = 3;
+    private const int gridColumns = 6;
+    private const float offsetX = 2.1f;
+    private const float offsetY = 2.5f;
 
     [Header("Cards")]
     [SerializeField] private MainCard originalCard;
