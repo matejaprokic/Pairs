@@ -651,7 +651,7 @@ MonoBehaviour:
   scoreLabel: {fileID: 1701886653}
   attemptsLabel: {fileID: 919250921}
   timerLabel: {fileID: 347884031}
-  maxGameTime: 1
+  maxGameTime: 5
   comboLabel: {fileID: 865831278}
   pausePanel: {fileID: 332482685}
   pauseButton: {fileID: 535974051}
